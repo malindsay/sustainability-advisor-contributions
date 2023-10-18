@@ -1,0 +1,10 @@
+{
+  "name": "sustainability-advisor-contributions",
+  "description": "Defines the manifest of web components that are loaded into Console UI for Sustainability Advisor as well as required files such as resource bundles",
+  "version": "1.0.0",
+  "scripts": {
+  },
+  "files": [
+    "files"
+  ]
+}

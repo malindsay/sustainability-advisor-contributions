@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Upload Stage
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ main ]
+    paths:
+    - 'contributions/stage/**/*'
+  pull_request:
+    branches: [ main ]  
+    paths:
+    - 'contributions/stage/**/*'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+env:
+  ab_1: ${{secrets.TEST_SECRET}}
+  HMAC_SECRET: ${{secrets.DEVOPS_HMAC_SECRET}}
+  HMAC_ACCESS_KEY: ${{secrets.DEVOPS_HMAC_ACCESS_KEY}}
+  DEVOPS_FILE_TARGET_FOLDER_DEFAULT: contributions/stage
+jobs:
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: [ self-hosted ]
+    container: us-central1-docker.pkg.dev/kyndryl-platform-dev/kyndryl-p-repository/base-runner-image:0.3.4
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: kyndryl-platform/devops-custom-actions/download-scripts@main
+      - uses: kyndryl-platform/devops-custom-actions/set-default-variables@main
+      - name: Set env DEVOPS_FILE_TARGET_FOLDER
+        shell: bash
+        run: |
+          if [[ $DEVOPS_BRANCH_NAME != 'main' && $GITHUB_EVENT_NAME != 'push' ]]; then
+              echo "DEVOPS_FILE_TARGET_FOLDER=$DEVOPS_BRANCH_NAME" >> "$GITHUB_ENV"
+          else
+              echo "DEVOPS_FILE_TARGET_FOLDER=$DEVOPS_FILE_TARGET_FOLDER_DEFAULT" >> "$GITHUB_ENV"
+          fi
+      - uses: kyndryl-platform/devops-custom-actions/bridge-upload-file@main
+        env:
+          DEVOPS_FILE_LOCAL_TARGET_FOLDER: contributions/stage
+          DEVOPS_TARGET_FILE_NAME: sustain-advisor.json
+          DEVOPS_BUCKET_TARGET: console-ui
+
+

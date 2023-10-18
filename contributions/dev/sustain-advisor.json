@@ -1,0 +1,14 @@
+[
+  {
+    "id": "sustain-advisor",
+    "linkTo": [
+        "menu"
+    ],
+    "name": "Sustainability Advisor",
+    "route": "sustain-advisor",
+    "type": "webComponent",
+    "launchOut": true,
+    "element": "sustain-advisor",
+    "url": "https://dca-demo.sustainability-advisor.kyndryl.com/#!/home"
+  }
+]
